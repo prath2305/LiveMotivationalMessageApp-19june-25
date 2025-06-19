@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>✨ New Motivational Message App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+      padding: 40px 30px;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.4);
+    }
+
+    #msg {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin: 20px 0 10px 0;
+      min-height: 80px;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      line-height: 1.4;
+    }
+
+    #msg.visible {
+      opacity: 1;
+    }
+
+    #aut {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #e0e0e0;
+      min-height: 25px;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    #aut.visible {
+      opacity: 1;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>New Motivational Message App</h1>
+    <h2 id="msg"></h2>
+    <h3 id="aut"></h3>
+    <div class="footer">Quotes refresh automatically every 3 seconds</div>
+  </div>
+
+  <script>
+    async function gm() {
+      const msg = document.getElementById("msg");
+      const aut = document.getElementById("aut");
+
+      // Hide before update
+      msg.classList.remove("visible");
+      aut.classList.remove("visible");
+
+      try {
+        const res = await fetch("https://quotes-api-self.vercel.app/quote");
+        const data = await res.json();
+
+        // Set new quote and author
+        msg.textContent = `“${data.quote}”`;
+        aut.textContent = `— ${data.author}`;
+
+        // Show with fade in
+        setTimeout(() => {
+          msg.classList.add("visible");
+          aut.classList.add("visible");
+        }, 100);
+      } catch (err) {
+        msg.textContent = "⚠️ Unable to fetch quote.";
+        aut.textContent = "";
+        msg.classList.add("visible");
+      }
+    }
+
+    gm(); // load first quote immediately
+    setInterval(gm, 3000); // update every 3 seconds
+  </script>
+</body>
+</html>
